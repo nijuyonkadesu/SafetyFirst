@@ -4,13 +4,16 @@ import android.graphics.Color.red
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.ktx.awaitMap
+import com.google.maps.android.ktx.awaitMapLoad
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity() {
     private lateinit var mMap: GoogleMap
     private var circle: Circle? = null
     val emergencyLocation = LatLng(13.0327, 80.23)
@@ -18,21 +21,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.maps) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        lifecycleScope.launchWhenCreated {
+            // get map
+            val googleMap = mapFragment.awaitMap()
+            // wait for map to finish loading
+            googleMap.awaitMapLoad()
+            val bounds = LatLngBounds.builder()
+            bounds.include(emergencyLocation)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
 
-        mapFragment.getMapAsync { googleMap ->
-            // Ensure all places are visible in the map.
-            googleMap.setOnMapLoadedCallback {
-                val bounds = LatLngBounds.builder()
-                bounds.include(emergencyLocation)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
-            }
+            marker(googleMap)
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
+    private fun marker(googleMap: GoogleMap) {
         mMap = googleMap
 
         mMap.addMarker(
