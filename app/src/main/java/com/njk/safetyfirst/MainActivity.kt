@@ -1,13 +1,11 @@
 package com.njk.safetyfirst
 
-import android.graphics.Color.red
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.ktx.awaitMap
@@ -58,6 +56,11 @@ class MainActivity : AppCompatActivity() {
                 .fillColor(ContextCompat.getColor(this, R.color.red_translucent))
                 .strokeColor(ContextCompat.getColor(this, R.color.red))
         )
+    }
+
+    fun parseSms(){
+        // TODO: https://www.youtube.com/watch?v=y-UXGMZk92E
+        // TODO: NotifListener, Broadcast Receiver, Notif Listener Service, on notif posted getNotifcations(), sendBroadcast(msgrcv)
     }
 }
 
