@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Safety First</string>
+    <string name="no_issues">There are no issues! we\'ll notify you incase of unfortunates</string>
 </resources>
