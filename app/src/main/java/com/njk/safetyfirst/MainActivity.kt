@@ -8,14 +8,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var circle: Circle? = null
+    val emergencyLocation = LatLng(13.0327, 80.23)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,19 +21,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.maps) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        mapFragment.getMapAsync { googleMap ->
+            // Ensure all places are visible in the map.
+            googleMap.setOnMapLoadedCallback {
+                val bounds = LatLngBounds.builder()
+                bounds.include(emergencyLocation)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val emergencyLocation = LatLng(13.0327, 80.23)
 
         mMap.addMarker(
             MarkerOptions()
                 .position(emergencyLocation)
                 .title("Marker in Emergency!")
         )
-        addCircle(mMap, emergencyLocation)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(emergencyLocation))
+        addCircle(mMap, emergencyLocation)
     }
 
     private fun addCircle(googleMap: GoogleMap, item: LatLng) {
@@ -43,7 +49,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         circle = googleMap.addCircle(
             CircleOptions()
                 .center(item)
-                .radius(1000.0)
+                .radius(50.0)
                 .fillColor(ContextCompat.getColor(this, R.color.red_translucent))
                 .strokeColor(ContextCompat.getColor(this, R.color.red))
         )
