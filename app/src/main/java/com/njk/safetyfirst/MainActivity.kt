@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(arrayOf("Manifest.permission.RECEIVE_SMS"), 1000)
+            requestPermissions(arrayOf("Manifest.permission.RECEIVE_SMS", "Manifest.permission.POST_NOTIFICATIONS"), 1000)
     }
 
     override fun onRequestPermissionsResult(
