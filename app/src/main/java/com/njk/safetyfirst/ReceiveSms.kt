@@ -6,18 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Telephony
 import android.widget.Toast
-import java.util.regex.Matcher
+import androidx.core.content.ContextCompat.startActivity
 import java.util.regex.Pattern
 
 class ReceiveSms : BroadcastReceiver() {
-    var latitude = 0.0
-    var longitude = 0.0
-
+    companion object SmsLocation {
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+    }
     override fun onReceive(context: Context, intent: Intent) {
 //        Toast.makeText(context, "Yo working, yes. now cry.", Toast.LENGTH_SHORT).show()
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
             val bundle: Bundle? = intent.getExtras()
-
 
             if (bundle!=null){
                 val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
@@ -31,6 +31,11 @@ class ReceiveSms : BroadcastReceiver() {
                         latitude = matcher.group(1)!!.toDouble()
                         longitude = matcher.group(2)!!.toDouble()
                         Toast.makeText(context, "Message from ${message.displayOriginatingAddress} : lat/long: $latitude / $longitude", Toast.LENGTH_LONG).show()
+                        val mapIntent = Intent(context, MapActivity::class.java)
+                        mapIntent.putExtra("lat", latitude)
+                        mapIntent.putExtra("long", longitude)
+                        mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(context, mapIntent, null)
                     }
                 }
             }

@@ -29,10 +29,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
-    fun parseSms(){
-        // TODO: https://www.youtube.com/watch?v=y-UXGMZk92E
-    }
 }
 
 // TODO: info adapter https://developers.google.com/codelabs/maps-platform/maps-platform-101-android?authuser=0#6 
