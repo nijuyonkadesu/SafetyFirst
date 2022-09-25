@@ -11,7 +11,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // TODO: NotifListener, Broadcast Receiver, Notif Listener Service, on notif posted getNotifcations(), sendBroadcast(msgrcv)
         if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(arrayOf("Manifest.permission.RECEIVE_SMS"), 1000)
     }

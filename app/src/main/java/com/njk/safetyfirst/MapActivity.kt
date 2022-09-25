@@ -11,43 +11,49 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.awaitMapLoad
+import com.njk.safetyfirst.SmsLocation.latitude
+import com.njk.safetyfirst.SmsLocation.longitude
+import com.njk.safetyfirst.databinding.ActivityMapBinding
+
+object SmsLocation {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+}
 
 class MapActivity :AppCompatActivity() {
-    companion object SmsLocation {
-        var latitude: Double = 0.0
-        var longitude: Double = 0.0
-        var emergencyLocation: LatLng = LatLng(0.0,0.0)
-    }
 
-    private lateinit var mMap: GoogleMap
+    var emergencyLocation: LatLng = LatLng(0.0, 0.0)
     private var circle: Circle? = null
+
+    private lateinit var binding: ActivityMapBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMapBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        latitude = intent?.extras?.getString("lat")?.toDouble() ?: 0.0
-        longitude = intent?.extras?.getString("long")?.toDouble() ?: 0.0
-        val emergencyLocation = LatLng(latitude, longitude)
+//        latitude = intent?.extras?.getString("lat")!!.toDouble()
+//        longitude = intent?.extras?.getString("long")!!.toDouble()
+        emergencyLocation = LatLng(latitude, longitude)
         Log.d("intent", "intent received $latitude, $longitude")
 
         // TODO: fix findFragmentById cannot detect view
         val mapFragment = (supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment?)
+            .findFragmentById(R.id.map) as SupportMapFragment)
         lifecycleScope.launchWhenCreated {
             // get map
-            val googleMap = mapFragment?.awaitMap()
+            val googleMap = mapFragment.awaitMap()
             // wait for map to finish loading
-            googleMap?.awaitMapLoad()
+            googleMap.awaitMapLoad()
             val bounds = LatLngBounds.builder()
             bounds.include(emergencyLocation)
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
-
-            if (googleMap != null) {
-                marker(googleMap)
-            }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
+            marker(googleMap)
         }
     }
+
     private fun marker(googleMap: GoogleMap) {
-        mMap = googleMap
+        val mMap = googleMap
 
         mMap.addMarker(
             MarkerOptions()
